@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+  php-apache-environment:
+    container_name: php-apache
+    # image: php:8.0-apache
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./php/src:/var/www/html
+    ports:
+      - 8000:80
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    restart: always
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456789
+      MYSQL_DATABASE: MY_DATABASE
+      MYSQL_USER: abdelali
+      MYSQL_PASSWORD: 123456789
+    ports:
+      - "9906:3306"
+# secrets:
+#   - mysql_user:
+#       file: ./my_user.txt
+#   - user_password:
+#       file: ./user_password.txt
+#   - root_password:
+#       file: ./root_password.txt
